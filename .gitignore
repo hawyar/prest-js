@@ -1,0 +1,11 @@
+node_modules
+.vscode
+.DS_Store
+.env
+.nyc_output
+coverage
+.npmrc
+.env.*
+docs
+static.js
+tests/data
