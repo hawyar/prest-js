@@ -1,10 +1,10 @@
-<!-- start:readme.hbs -->
+<!-- start:source.tmpl.hbs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-		<title>prest-js</title>
+		<title>client.js</title>
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -42,7 +42,7 @@
 			</style>
 		<script type="text/javascript">
 			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"prest-js","systemSummary":"Isomorphic JavaScript client for pREST","systemLogo":"","systemColor":"#142F43","navMembers":[{"kind":"class","title":"Classes","summary":"All documented classes."},{"kind":"external","title":"Externals","summary":"All documented external members."},{"kind":"global","title":"Globals","summary":"All documented globals."},{"kind":"mixin","title":"Mixins","summary":"All documented mixins."},{"kind":"interface","title":"Interfaces","summary":"All documented interfaces."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."},{"kind":"tutorial","title":"Tutorials","summary":"All available tutorials."}],"footer":"https://github.com/prest/prest","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":true,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":true,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, longname, version, since","search":true,"favicon":null,"stylesheets":[],"scripts":[],"monospaceLinks":false,"cleverLinks":false};
-			window.DOCLET_TOC_ENABLED = true;
+			window.DOCLET_TOC_ENABLED = false;
 			window.DOCLET_AFILTER_ENABLED = false;
 		</script>
 </head>
@@ -86,95 +86,168 @@
 	</header>
 	<!-- end:navbar.hbs -->		<div class="page-header">
 			<div class="container">
-				<span class="kind">readme</span>
-				<h1><span class="name">prest-js</span></h1>
-				<div class="summary"><p>Isomorphic JavaScript client for pREST</p></div>			</div>
+				<span class="kind">source</span>
+				<h1><span class="name">client.js</span></h1>
+			</div>
 		</div>
 	<div class="container content">
 		<div class="row">
-			<div class="col-md-9 main-content">
-		<section class="readme-section">
-			<article><h1>prest-js</h1>
-<p><img src="https://github.com/hawyar/node-esm-starter/actions/workflows/test.yml/badge.svg" alt="tests"></p>
-<blockquote>
-<p>Isomorphic JavaScript client for <a href="https://docs.prestd.com/">pREST</a></p>
-</blockquote>
-<h2>Install</h2>
-<pre class="prettyprint source lang-bash"><code>npm install prest-js
-</code></pre>
-<h2>Usage</h2>
-<pre class="prettyprint source lang-js"><code>const { createClient } = require(&quot;prest-js&quot;);
+			<div class="col-md-12 main-content">
+		<section class="source-section">
+			<article></article>
+			<pre class="prettyprint source language-javascript line-numbers"><code class="language-javascript">import fetch from 'cross-fetch'
 
-const client = createClient(&quot;&lt;your pREST instance url>&quot;)
-</code></pre>
-<h3>API</h3>
-<pre class="prettyprint source lang-js"><code>const { dat: users, error } = await client.from(&quot;prest_users&quot;).select(&quot;*&quot;) 
+class Client {
+  constructor(url) {
+    this.url = new URL(url)
+    this.isofetch = fetch // isomorphic fetch
+    this.defaults = {
+      'Content-Type': 'application/json',
+    }
+    this.auth = {}
+    this.query = {
+      from: '',
+      select: '',
+      database: '',
+      schema: '',
+    }
+    this.result = {
+      data: {},
+      error: null,
+    }
+  }
 
-if (error) {
-	console.error(error)
+  /**
+   * @param {string} query - search query to execute
+   *
+   */
+  select(query) {
+    return new Promise((resolve, reject) => {
+      try {
+        if (typeof query !== 'string') {
+          reject({
+            data: null,
+            error: `column name must be a string: given: ${typeof query}`,
+          })
+        }
+
+        if (query === '*') {
+          this.query.select = query
+
+          // TODO: having issue conencting to db, for now just get schemas
+          this.request({
+            url: this.url.href + 'schemas',
+            method: 'GET',
+          }).then((res) => {
+            resolve({
+              data: res.data,
+              error: null,
+            })
+          })
+        } else {
+          resolve({
+            data: null,
+            error: 'only testing `select *` for now',
+          })
+        }
+      } catch (err) {
+        reject({
+          data: null,
+          error: `error querying ${query}: \n ${err}`,
+        })
+      }
+    })
+  }
+
+  /**
+   * @description Exectues given query
+   */
+  request(props) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.isofetch(props.url, {
+          method: props.method,
+          headers: {
+            ...this.defaults,
+          },
+        })
+          .then((res) => {
+            if (res.status !== 200) {
+              resolve({
+                data: null,
+                error: `error querying ${this.query.from}: \n ${res.status}`,
+              })
+            }
+
+            return res.json()
+          })
+          .then((result) => {
+            resolve({
+              data: result,
+              error: null,
+            })
+          })
+      } catch (e) {
+        reject({
+          data: null,
+          error: e,
+        })
+      }
+    })
+  }
+
+  /**
+   * @description pREST generates JWT token for authentication
+   *
+   */
+  auth() {}
+
+  /**
+   * @description Inserts data into a table
+   * @param {string} payload - data to insert
+   *
+   */
+  insert(payload) {}
+
+  /**
+   * @description Defines the table to query from
+   * @param {string} table - table to operate query on
+   *
+   */
+  from(table) {
+    if (typeof table !== 'string') {
+      return {
+        data: null,
+        error: 'query must be a string',
+      }
+    }
+    this.query.from = table
+    return this
+  }
 }
 
-console.log(user)
+/**
+ * @description Creates a new client instance
+ * @param {string} url - url of the prest instance
+ * @returns {Promise} - returns a new client instance
+ *
+ * @example
+ * 		import { createClient } from '../lib/client.js'
+ * 		const client = await createClient('http://localhost:3000')
+ */
+function createClient(url, options) {
+  if (typeof url !== 'string' || url.length === 0)
+    throw new Error('invalid pREST url')
+
+  const client = new Client(url, options)
+
+  return client
+}
+
+export { createClient }
 </code></pre>
-<h2>Testing</h2>
-<p>Pre-requisite:</p>
-<ul>
-<li><a href="https://www.docker.com/">Docker</a></li>
-</ul>
-<p>The <code>docker-compose.yml</code> located in the tests directory is used to spin up prestd and postgres services with default values.</p>
-<ol>
-<li>Start postgres and prestd</li>
-</ol>
-<pre class="prettyprint source lang-bash"><code>cd tests && docker-compose up
-</code></pre>
-<ol start="2">
-<li>Run data migration for auth</li>
-</ol>
-<pre class="prettyprint source lang-bash"><code>docker-compose exec prest prestd migrate up auth
-</code></pre>
-<ol start="3">
-<li>Create test user</li>
-</ol>
-<pre class="prettyprint source lang-bash"><code>docker-compose exec postgres psql -d prest -U prest -c &quot;INSERT INTO prest_users (name, username, password) VALUES ('pREST Full Name', 'prest', MD5('prest'))&quot;
-</code></pre>
-<ol start="4">
-<li>Run client tests</li>
-</ol>
-<pre class="prettyprint source lang-bash"><code>npm run test
-</code></pre>
-<h2>Build</h2>
-<p>Using <a href="https://esbuild.github.io/">esbuild</a> to bundle JS for the browser and Node (ESM and CommonJS). To build for all run:</p>
-<pre class="prettyprint source lang-bash"><code>npm run build
-</code></pre>
-<p>and to target a specific build target run:</p>
-<ul>
-<li><code>npm run build:browser</code></li>
-<li><code>npm run build:esm</code></li>
-<li><code>npm run build:cjs</code></li>
-</ul>
-<h3>Build docs</h3>
-<p>Using <a href="https://jsdoc.app/index.html">JSDoc</a> for documentation</p>
-<pre class="prettyprint source lang-bash"><code>npm run build:docs
-</code></pre>
-<p>it also includes a local server for previewing the docs.</p>
-<pre class="prettyprint source lang-bash"><code>npm run serve:docs
-</code></pre>
-<h2>Contributing</h2>
-<p>All contributions are welcome. For major changes, please open an issue.</p>
-<ol>
-<li>Fork repository</li>
-<li>Create your feature branch (git checkout -b feature/fooBar)</li>
-<li>Commit your changes (git commit -am 'Add some fooBar')</li>
-<li>Push to the branch (git push origin feature/fooBar)</li>
-<li>Create a new Pull Request</li>
-</ol>
-<hr>
-<p>For more information visit <a href="https://docs.prestd.com/">pREST docs</a></p></article>
 		</section>
 			</div>
-				<div class="col-md-3 side-content">
-					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
-				</div>
 		</div>
 	</div>
 	<footer>
@@ -207,4 +280,4 @@ console.log(user)
 	
 </body>
 </html>
-<!-- end:readme.hbs -->
+<!-- end:source.tmpl.hbs -->

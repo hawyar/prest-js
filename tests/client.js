@@ -4,16 +4,16 @@ import { createClient } from '../lib/client.js'
 tap.test('create client', (t) => {
   const client = createClient('http://localhost:8080')
 
-  console.log(client)
+  t.ok(client, 'client created')
   t.end()
 })
 
-tap.test('create client', async (t) => {
+tap.test('select *', async (t) => {
   const local = 'http://localhost:3000'
 
   const client = createClient(local)
 
-  const { data, error } = await client.from('weather').select('*')
+  const { data, error } = await client.select('*')
 
   if (error) {
     t.fail(error)

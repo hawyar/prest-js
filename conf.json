@@ -4,7 +4,7 @@
     "systemName": "prest-js",
     "systemSummary": "Isomorphic JavaScript client for pREST",
     "systemColor": "#142F43",
-    "footer": "hawyar",
+    "footer": "https://github.com/prest/prest",
     "includeDate": true,
     "showTableOfContents": true,
     "showAccessFilter": true,
