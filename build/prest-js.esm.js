@@ -1104,14 +1104,16 @@ var Client = class {
     };
     this.auth = {};
     this.query = {
+      pageSize: 10,
+      count: false,
+      renderer: "json",
       from: "",
       select: "",
       database: "",
-      schema: ""
-    };
-    this.result = {
-      data: {},
-      error: null
+      schema: "public",
+      distinct: false,
+      order: "",
+      groupBy: ""
     };
   }
   select(query) {
@@ -1125,8 +1127,9 @@ var Client = class {
         }
         if (query === "*") {
           this.query.select = query;
+          const urlCall = () => this.url.href + "/" + this.query.schema + "/" + this.query.from;
           this.request({
-            url: this.url.href + "schemas",
+            url: urlCall(),
             method: "GET"
           }).then((res) => {
             resolve({
@@ -1158,7 +1161,7 @@ var Client = class {
             ...this.defaults
           }
         }).then((res) => {
-          if (res.status !== 200) {
+          if (!res.ok) {
             resolve({
               data: null,
               error: `error querying ${this.query.from}: 
@@ -1181,6 +1184,8 @@ var Client = class {
     });
   }
   auth() {
+  }
+  meta() {
   }
   insert(payload) {
   }

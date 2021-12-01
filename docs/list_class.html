@@ -1,10 +1,9 @@
-<!-- start:source.tmpl.hbs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-		<title>client.js</title>
+		<title>Classes</title>
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -42,7 +41,7 @@
 			</style>
 		<script type="text/javascript">
 			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"prest-js","systemSummary":"Isomorphic JavaScript client for pREST","systemLogo":"","systemColor":"#142F43","navMembers":[{"kind":"class","title":"Classes","summary":"All documented classes."},{"kind":"external","title":"Externals","summary":"All documented external members."},{"kind":"global","title":"Globals","summary":"All documented globals."},{"kind":"mixin","title":"Mixins","summary":"All documented mixins."},{"kind":"interface","title":"Interfaces","summary":"All documented interfaces."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."},{"kind":"tutorial","title":"Tutorials","summary":"All available tutorials."}],"footer":"https://github.com/prest/prest","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":true,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":true,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, longname, version, since","search":true,"favicon":null,"stylesheets":[],"scripts":[],"monospaceLinks":false,"cleverLinks":false};
-			window.DOCLET_TOC_ENABLED = false;
+			window.DOCLET_TOC_ENABLED = true;
 			window.DOCLET_AFILTER_ENABLED = false;
 		</script>
 </head>
@@ -92,190 +91,36 @@
 	</header>
 	<!-- end:navbar.hbs -->		<div class="page-header">
 			<div class="container">
-				<span class="kind">source</span>
-				<h1><span class="name">client.js</span></h1>
-			</div>
+				<span class="kind">list</span>
+				<h1><span class="name">Classes</span></h1>
+				<div class="summary"><p>All documented classes.</p></div>			</div>
 		</div>
 	<div class="container content">
 		<div class="row">
-			<div class="col-md-12 main-content">
-		<section class="source-section">
-			<article></article>
-			<pre class="prettyprint source language-javascript line-numbers"><code class="language-javascript">import fetch from 'cross-fetch'
-
-/**
- * @description Client class that handles requests to the pREST instance
- * @class Client
- * @param {string} url - url of the prest instance
- * @type {Client}
- *
- */
-class Client {
-  constructor(url) {
-    this.url = new URL(url)
-    this.isofetch = fetch // isomorphic fetch
-    this.defaults = {
-      'Content-Type': 'application/json',
-    }
-    this.auth = {}
-    this.query = {
-      pageSize: 10,
-      count: false,
-      renderer: 'json', // api render syntax, could be one of: json, xml
-      from: '',
-      select: '',
-      database: '',
-      schema: 'public',
-      distinct: false,
-      order: '',
-      groupBy: '',
-    }
-  }
-
-  /**
-   * @description Defines the columns to select from
-   * @param {string} query - search query to execute
-   *
-   */
-  select(query) {
-    return new Promise((resolve, reject) => {
-      try {
-        if (typeof query !== 'string') {
-          reject({
-            data: null,
-            error: `column name must be a string: given: ${typeof query}`,
-          })
-        }
-
-        if (query === '*') {
-          this.query.select = query
-
-          // TODO: move url construtor to a separate function
-          const urlCall = () =>
-            this.url.href + '/' + this.query.schema + '/' + this.query.from
-
-          // TODO: having issue conencting to db, for now just get schemas
-          this.request({
-            url: urlCall(),
-            method: 'GET',
-          }).then((res) => {
-            resolve({
-              data: res.data,
-              error: null,
-            })
-          })
-        } else {
-          resolve({
-            data: null,
-            error: 'only testing `select *` for now',
-          })
-        }
-      } catch (err) {
-        reject({
-          data: null,
-          error: `error querying ${query}: \n ${err}`,
-        })
-      }
-    })
-  }
-
-  /**
-   * @description Exectues given query
-   */
-  request(props) {
-    return new Promise((resolve, reject) => {
-      try {
-        this.isofetch(props.url, {
-          method: props.method,
-          headers: {
-            ...this.defaults,
-          },
-        })
-          .then((res) => {
-            if (!res.ok) {
-              resolve({
-                data: null,
-                error: `error querying ${this.query.from}: \n ${res.status}`,
-              })
-            }
-
-            return res.json()
-          })
-          .then((result) => {
-            resolve({
-              data: result,
-              error: null,
-            })
-          })
-      } catch (e) {
-        reject({
-          data: null,
-          error: e,
-        })
-      }
-    })
-  }
-
-  /**
-   * @description pREST generates JWT token for authentication
-   *
-   */
-  auth() {}
-
-  /**
-   * @description Gets the metadata for a table
-   * pREST endpoint: /show/{DATABASE}/{SCHEMA}/{TABLE}
-   *
-   * @returns {Promise} - resolves with metadata
-   */
-  meta() {}
-
-  /**
-   * @description Inserts data into a table
-   * @param {string} payload - data to insert
-   *
-   */
-  insert(payload) {}
-
-  /**
-   * @description Defines the table to query from
-   * @param {string} table - table to operate query on
-   *
-   */
-  from(table) {
-    if (typeof table !== 'string') {
-      return {
-        data: null,
-        error: 'query must be a string',
-      }
-    }
-    this.query.from = table
-    return this
-  }
-}
-
-/**
- * @description Creates a new client instance
- * @param {string} url - url of the prest instance
- * @returns {Promise} - returns a new client instance
- *
- * @example
- * 		import { createClient } from '../lib/client.js'
- * 		const client = await createClient('http://localhost:3000')
- */
-function createClient(url, options) {
-  if (typeof url !== 'string' || url.length === 0)
-    throw new Error('invalid pREST url')
-
-  const client = new Client(url, options)
-
-  return client
-}
-
-export { createClient }
-</code></pre>
-		</section>
+			<div class="col-md-9 main-content">
+						<ol class="breadcrumb">
+							<li><a href="index.html">Home</a></li>
+							<li class="active">Classes</li>
+						</ol>
+					<section>
+		<h2><span class="name">Classes</span></h2>
+		<article class="secondary">
+				<dl class="symbol">
+						
+						<dt class="symbol-title class public">
+			<h4 id="Client" class="class public"><a href="Client.html"><span class="signature-new">new&nbsp;</span><span class="name">Client</span><span class="signature-params">( <span class="signature-param">url</span>&nbsp;)</span><span class="signature-type"></span></a></h4>
+</dt>
+<dd class="symbol-details class public">
+	<div class="symbol-details-inner">
+	</div>
+</dd>
+				</dl>
+		</article>
+					</section>
 			</div>
+				<div class="col-md-3 side-content">
+					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
+				</div>
 		</div>
 	</div>
 	<footer>
@@ -308,4 +153,3 @@ export { createClient }
 	
 </body>
 </html>
-<!-- end:source.tmpl.hbs -->

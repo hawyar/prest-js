@@ -15,12 +15,12 @@ npm install prest-js
 ```js
 const { createClient } = require("prest-js");
 
-const client = createClient("<your pREST instance url>")
+const client = createClient("<pREST instance url>")
 ```
 
 ### API
 ```js
-const { dat: users, error } = await client.from("prest_users").select("*") 
+const { data, error } = await client.from('weather').select('*') 
 
 if (error) {
 	console.error(error)
@@ -28,8 +28,6 @@ if (error) {
 
 console.log(user)
 ```
-
-
 
 ## Testing
 
@@ -49,18 +47,15 @@ cd tests && docker-compose up
 docker-compose exec prest prestd migrate up auth
 ```
 
-
 3. Create test user 
 ```bash
 docker-compose exec postgres psql -d prest -U prest -c "INSERT INTO prest_users (name, username, password) VALUES ('pREST Full Name', 'prest', MD5('prest'))"
 ```
 
-
 4. Run client tests
 ```bash
 npm run test
 ```
-
 
 ## Build
 
@@ -76,7 +71,6 @@ and to target a specific build target run:
 - `npm run build:esm`
 - `npm run build:cjs`
 
-
 ### Build docs
 
 Using [JSDoc](https://jsdoc.app/index.html) for documentation
@@ -91,7 +85,6 @@ it also includes a local server for previewing the docs.
 npm run serve:docs
 ```
 
-
 ## Contributing
 
 All contributions are welcome. For major changes, please open an issue.
@@ -101,7 +94,6 @@ All contributions are welcome. For major changes, please open an issue.
 3. Commit your changes (git commit -am 'Add some fooBar')
 4. Push to the branch (git push origin feature/fooBar)
 5. Create a new Pull Request
-
 
 ---
 

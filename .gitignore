@@ -7,3 +7,4 @@ coverage
 .npmrc
 .env.*
 tests/data
+tests/*.sql
