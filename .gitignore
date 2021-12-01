@@ -6,6 +6,4 @@ node_modules
 coverage
 .npmrc
 .env.*
-docs
-static.js
 tests/data

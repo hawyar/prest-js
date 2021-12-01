@@ -1,6 +1,6 @@
 {
   "name": "prest-js",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Isomorphic JavaScript client for pREST",
   "author": "hawyar",
   "license": "MIT",
@@ -9,14 +9,16 @@
   "module": "build/prest-js.esm.js",
   "browser": "build/prest-js.browser.js",
   "scripts": {
-    "test": "tap --no-coverage --reporter=specy -J --color",
+    "test": "tap --no-coverage --reporter=specy -J --color -t 40  --before tests/setup.js",
     "build:docs": "rm -rf docs && jsdoc lib/index.js -t ./node_modules/foodoc/template -d docs -r -e utf8 --readme README.md -c conf.json",
     "serve:docs": " rm -rf docs && npm run build:docs && node static",
     "build:cjs": "esbuild lib/index.js --format=cjs --bundle --platform=node --outfile=build/prest-js.js",
     "build:esm": "esbuild lib/index.js --format=esm --bundle --platform=node --outfile=build/prest-js.esm.js",
     "build:browser": "esbuild lib/index.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --outfile=build/prest-js.browser.js",
     "build": "npm run build:cjs && npm run build:esm && npm run build:browser",
-    "clean": "rm -rf docs build"
+    "clean": "rm -rf docs build tests/data",
+    "compose:up": "cd tests && docker-compose up -d",
+    "compose:down": "cd tests && docker-compose down"
   },
   "devDependencies": {
     "esbuild": "^0.13.4",
@@ -27,6 +29,7 @@
     "tap": "^15.0.9"
   },
   "dependencies": {
+    "cross-fetch": "^3.1.4",
     "superagent": "^6.1.0"
   },
   "repository": {
@@ -34,9 +37,10 @@
     "url": "https://github.com/hawyar/prest-js"
   },
   "keywords": [
-    "postgres",
     "prest",
+    "postgres",
     "prest-js",
+    "orm",
     "prest client"
   ]
 }

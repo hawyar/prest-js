@@ -14,20 +14,22 @@ npm install prest-js
 
 ```js
 const { createClient } = require("prest-js");
-const client = createClient({
-  baseUrl: "<your pREST instance url",
-});
+
+const client = createClient("<your pREST instance url>")
 ```
 
-## API
-
+### API
 ```js
-const { createClient } = require("prest-js");
+const { dat: users, error } = await client.from("prest_users").select("*") 
 
-const client = createClient({
-  url: "<your pREST instance url",
-});
+if (error) {
+	console.error(error)
+}
+
+console.log(user)
 ```
+
+
 
 ## Testing
 
@@ -39,57 +41,51 @@ The `docker-compose.yml` located in the tests directory is used to spin up prest
 1. Start postgres and prestd
 
 ```bash
-docker-compose up
+cd tests && docker-compose up
 ```
 
-2. Run data migration to create user
+2. Run data migration for auth
 ```bash
 docker-compose exec prest prestd migrate up auth
 ```
 
-```bash
-npm run test
-```
 
 3. Create test user 
 ```bash
 docker-compose exec postgres psql -d prest -U prest -c "INSERT INTO prest_users (name, username, password) VALUES ('pREST Full Name', 'prest', MD5('prest'))"
 ```
 
-4. Generate JWT Token with user
-```bash
-curl -i -X POST http://127.0.0.1:3000/auth -H "Content-Type: application/json" -d '{"username": "prest", "password": "prest"'
-```
 
-5. Run client tests
+4. Run client tests
 ```bash
 npm run test
 ```
 
+
 ## Build
 
-Currently using [esbuild](https://esbuild.github.io/) to bundle JS for the browser and Node (ESM and CommonJS). To build for all run:
+Using [esbuild](https://esbuild.github.io/) to bundle JS for the browser and Node (ESM and CommonJS). To build for all run:
 
 ```bash
 npm run build
 ```
 
-and to target only one build, just specify it like
+and to target a specific build target run:
 
 - `npm run build:browser`
 - `npm run build:esm`
 - `npm run build:cjs`
 
 
-### Building docs
+### Build docs
 
-Using [JSDoc](https://jsdoc.app/index.html) for documentation. 
+Using [JSDoc](https://jsdoc.app/index.html) for documentation
 
 ```bash
 npm run build:docs
 ```
 
-It also includes a local server for previewing the docs.
+it also includes a local server for previewing the docs.
 
 ```bash
 npm run serve:docs
@@ -105,3 +101,12 @@ All contributions are welcome. For major changes, please open an issue.
 3. Commit your changes (git commit -am 'Add some fooBar')
 4. Push to the branch (git push origin feature/fooBar)
 5. Create a new Pull Request
+
+
+---
+
+For more information visit [pREST docs](https://docs.prestd.com/)
+
+
+
+

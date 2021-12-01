@@ -1,0 +1,204 @@
+<!-- start:readme.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>prest-js</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+			<style>
+				.page-header,
+				pre.code-toolbar > .toolbar:hover {
+					background-color: #142F43;
+				}
+				.callout-primary,
+				.toc .nav > li > a:hover,
+				.toc .nav > li > a:focus,
+				.toc .nav > li.active > a,
+				.toc .nav > li.active > a:hover,
+				.toc .nav > li.active > a:focus,
+				pre.code-toolbar > .toolbar:hover {
+					border-left-color: #142F43;
+				}
+				pre.code-toolbar > .toolbar:hover {
+					border-bottom-color: #142F43;
+				}
+				.callout-primary h5,
+				.symbol-title.collapsible-symbol .toggle-icon,
+				.breadcrumb li a,
+				.toc .nav > li > a:hover,
+				.toc .nav > li > a:focus,
+				.toc .nav > li.active > a,
+				.toc .nav > li.active > a:hover,
+				.toc .nav > li.active > a:focus {
+					color: #142F43;
+				}
+			</style>
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"prest-js","systemSummary":"Isomorphic JavaScript client for pREST","systemLogo":"","systemColor":"#142F43","navMembers":[{"kind":"class","title":"Classes","summary":"All documented classes."},{"kind":"external","title":"Externals","summary":"All documented external members."},{"kind":"global","title":"Globals","summary":"All documented globals."},{"kind":"mixin","title":"Mixins","summary":"All documented mixins."},{"kind":"interface","title":"Interfaces","summary":"All documented interfaces."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."},{"kind":"tutorial","title":"Tutorials","summary":"All available tutorials."}],"footer":"hawyar","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":true,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":true,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, longname, version, since","search":true,"favicon":null,"stylesheets":[],"scripts":[],"monospaceLinks":false,"cleverLinks":false};
+			window.DOCLET_TOC_ENABLED = true;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<header class="navbar navbar-default navbar-fixed-top navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">
+					prest-js
+				</a>
+				<!-- displayed on small devices -->
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse collapse" id="topNavigation">
+				<ul class="nav navbar-nav">
+				</ul>
+					<!-- start:lunr-search-navbar.hbs -->
+					<form class="navbar-form navbar-right" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" id="lunr-search-input">
+							<div class="input-group-btn">
+								<button class="btn btn-default" id="lunr-search-submit">
+									<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+					<!-- start:lunr-search-navbar.hbs -->		</div>
+		</div>
+	</header>
+	<!-- end:navbar.hbs -->		<div class="page-header">
+			<div class="container">
+				<span class="kind">readme</span>
+				<h1><span class="name">prest-js</span></h1>
+				<div class="summary"><p>Isomorphic JavaScript client for pREST</p></div>			</div>
+		</div>
+	<div class="container content">
+		<div class="row">
+			<div class="col-md-9 main-content">
+		<section class="readme-section">
+			<article><h1>prest-js</h1>
+<p><img src="https://github.com/hawyar/node-esm-starter/actions/workflows/test.yml/badge.svg" alt="tests"></p>
+<blockquote>
+<p>Isomorphic JavaScript client for <a href="https://docs.prestd.com/">pREST</a></p>
+</blockquote>
+<h2>Install</h2>
+<pre class="prettyprint source lang-bash"><code>npm install prest-js
+</code></pre>
+<h2>Usage</h2>
+<pre class="prettyprint source lang-js"><code>const { createClient } = require(&quot;prest-js&quot;);
+
+const client = createClient(&quot;&lt;your pREST instance url>&quot;)
+</code></pre>
+<h3>API</h3>
+<pre class="prettyprint source lang-js"><code>const { dat: users, error } = await client.from(&quot;prest_users&quot;).select(&quot;*&quot;) 
+
+if (error) {
+	console.error(error)
+}
+
+console.log(user)
+</code></pre>
+<h2>Testing</h2>
+<p>Pre-requisite:</p>
+<ul>
+<li><a href="https://www.docker.com/">Docker</a></li>
+</ul>
+<p>The <code>docker-compose.yml</code> located in the tests directory is used to spin up prestd and postgres services with default values.</p>
+<ol>
+<li>Start postgres and prestd</li>
+</ol>
+<pre class="prettyprint source lang-bash"><code>cd tests && docker-compose up
+</code></pre>
+<ol start="2">
+<li>Run data migration for auth</li>
+</ol>
+<pre class="prettyprint source lang-bash"><code>docker-compose exec prest prestd migrate up auth
+</code></pre>
+<ol start="3">
+<li>Create test user</li>
+</ol>
+<pre class="prettyprint source lang-bash"><code>docker-compose exec postgres psql -d prest -U prest -c &quot;INSERT INTO prest_users (name, username, password) VALUES ('pREST Full Name', 'prest', MD5('prest'))&quot;
+</code></pre>
+<ol start="4">
+<li>Run client tests</li>
+</ol>
+<pre class="prettyprint source lang-bash"><code>npm run test
+</code></pre>
+<h2>Build</h2>
+<p>Using <a href="https://esbuild.github.io/">esbuild</a> to bundle JS for the browser and Node (ESM and CommonJS). To build for all run:</p>
+<pre class="prettyprint source lang-bash"><code>npm run build
+</code></pre>
+<p>and to target a specific build target run:</p>
+<ul>
+<li><code>npm run build:browser</code></li>
+<li><code>npm run build:esm</code></li>
+<li><code>npm run build:cjs</code></li>
+</ul>
+<h3>Build docs</h3>
+<p>Using <a href="https://jsdoc.app/index.html">JSDoc</a> for documentation</p>
+<pre class="prettyprint source lang-bash"><code>npm run build:docs
+</code></pre>
+<p>it also includes a local server for previewing the docs.</p>
+<pre class="prettyprint source lang-bash"><code>npm run serve:docs
+</code></pre>
+<h2>Contributing</h2>
+<p>All contributions are welcome. For major changes, please open an issue.</p>
+<ol>
+<li>Fork repository</li>
+<li>Create your feature branch (git checkout -b feature/fooBar)</li>
+<li>Commit your changes (git commit -am 'Add some fooBar')</li>
+<li>Push to the branch (git push origin feature/fooBar)</li>
+<li>Create a new Pull Request</li>
+</ol>
+<hr>
+<p>For more information visit <a href="https://docs.prestd.com/">pREST docs</a></p></article>
+		</section>
+			</div>
+				<div class="col-md-3 side-content">
+					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
+				</div>
+		</div>
+	</div>
+	<footer>
+				<div class="footer-option">hawyar</div>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on 30th Nov 2021 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+	
+</body>
+</html>
+<!-- end:readme.hbs -->
